@@ -1,0 +1,24 @@
+---
+// A wobbly red pen underline. Decorative only.
+interface Props {
+  width?: number;
+}
+const { width = 520 } = Astro.props;
+---
+
+<svg class="hu" viewBox="0 0 520 24" style={`width:min(${width}px,100%)`} aria-hidden="true">
+  <path d="M4 14 C80 4 160 22 250 12 S420 4 516 15" />
+</svg>
+
+<style>
+  .hu {
+    display: block;
+    height: 24px;
+  }
+  path {
+    fill: none;
+    stroke: var(--ink-red);
+    stroke-width: 3;
+    stroke-linecap: round;
+  }
+</style>

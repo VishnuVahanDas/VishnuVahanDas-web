@@ -1,0 +1,13 @@
+- id: vainateya
+  order: 1
+  name: Vainateya Skytech Private Limited
+  role: Founder & Director
+  # TODO(vipul): one line about what Vainateya Skytech does
+  line: '[one line about Vainateya Skytech]'
+  # TODO(vipul): add the company website URL
+- id: holytrail
+  order: 2
+  name: HolyTrail
+  role: Founder
+  line: Yatra & pilgrimage journeys to the holy dhams.
+  url: https://holytrail.in

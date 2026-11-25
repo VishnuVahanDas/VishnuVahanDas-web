@@ -1,0 +1,105 @@
+---
+// The notebook on the desk: index tabs, ring binding, margin line, paper,
+// the LiPo battery and the shared footer. Pages put their content in the slot.
+import BaseLayout from './BaseLayout.astro';
+import IndexTabs from '../components/notebook/IndexTabs.astro';
+import LipoBattery from '../components/playful/LipoBattery.astro';
+import Lightbox from '../components/notebook/Lightbox.astro';
+import MalaCounter from '../components/playful/MalaCounter.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  paper?: 'graph' | 'ruled';
+  current?: 'log' | 'reports' | 'hangar' | 'seva' | 'contact' | 'notes';
+  noindex?: boolean;
+  jsonLd?: Record<string, unknown>;
+}
+const { paper = 'graph', current, ...meta } = Astro.props;
+const year = new Date().getFullYear();
+---
+
+<BaseLayout {...meta}>
+  <div class="desk">
+    <IndexTabs current={current} />
+    <div class:list={['page', paper === 'graph' ? 'paper-graph' : 'paper-ruled']}>
+      <div class="rings" aria-hidden="true"></div>
+      <div class="margin" aria-hidden="true"></div>
+      <main id="main" class="content">
+        <slot />
+      </main>
+      <footer class="foot">
+        <span>© {year} Vipul Kumar · logbook closed for today</span>
+        <MalaCounter />
+      </footer>
+    </div>
+  </div>
+  <LipoBattery />
+  <Lightbox />
+</BaseLayout>
+
+<script>
+  import '../scripts/reveal';
+</script>
+
+<style>
+  .desk {
+    padding: 34px 24px 72px;
+    min-height: 100vh;
+  }
+  .page {
+    position: relative;
+    max-width: var(--page-max);
+    margin: 0 auto;
+    border-radius: 4px 10px 10px 4px;
+    box-shadow: var(--shadow-page);
+    overflow: hidden;
+  }
+  .rings {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--ring-strip);
+    background-image: radial-gradient(circle at 50% 20px, var(--desk) 7px, transparent 8px);
+    background-size: var(--ring-strip) 40px;
+    border-right: 1px dashed rgba(46, 42, 36, 0.25);
+  }
+  .margin {
+    position: absolute;
+    left: calc(var(--page-pad-left) - 28px);
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--margin-line);
+  }
+  .content {
+    position: relative;
+    padding: 36px var(--page-pad) 40px var(--page-pad-left);
+  }
+  .foot {
+    position: relative;
+    margin: 0 var(--page-pad) 0 var(--page-pad-left);
+    padding: 20px 0 28px;
+    border-top: 2px solid var(--ink);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+    justify-content: space-between;
+    font-family: var(--font-type);
+    font-size: 0.8125rem;
+    color: var(--ink-muted);
+  }
+  @media (max-width: 720px) {
+    .desk {
+      padding: 20px 10px 72px;
+    }
+    .rings {
+      background-image: radial-gradient(circle at 50% 14px, var(--desk) 4px, transparent 5px);
+      background-size: var(--ring-strip) 28px;
+    }
+    .margin {
+      left: calc(var(--page-pad-left) - 10px);
+    }
+  }
+</style>

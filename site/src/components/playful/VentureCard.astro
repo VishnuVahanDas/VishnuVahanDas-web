@@ -1,0 +1,52 @@
+---
+// A pinned paper card for one of Vipul's companies.
+interface Props {
+  name: string;
+  role: string;
+  line: string;
+  url?: string;
+  rotate?: number;
+}
+const { name, role, line, url, rotate = 0 } = Astro.props;
+---
+
+<article class="venture paper-card" style={`--r:${rotate}deg`}>
+  <span class="pin" aria-hidden="true"></span>
+  <span class="label">{role}</span>
+  <h3>{url ? <a href={url}>{name}</a> : name}</h3>
+  <p>{line}</p>
+</article>
+
+<style>
+  .venture {
+    position: relative;
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius);
+    padding: 26px 24px 22px;
+    box-shadow: 3px 4px 0 rgba(46, 42, 36, 0.2);
+    transform: rotate(calc(var(--r) * var(--rot-scale)));
+  }
+  .pin {
+    position: absolute;
+    top: -9px;
+    left: 50%;
+    width: 18px;
+    height: 18px;
+    margin-left: -9px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #ff8a7a, var(--ink-red) 65%);
+    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.35);
+  }
+  h3 {
+    font-family: var(--font-hand);
+    font-size: 1.75rem;
+    margin: 6px 0 6px;
+  }
+  h3 a {
+    color: var(--ink);
+    text-decoration-color: var(--ink-red);
+  }
+  p {
+    font-size: 1rem;
+  }
+</style>

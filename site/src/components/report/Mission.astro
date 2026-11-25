@@ -1,0 +1,8 @@
+---
+// MDX helper: <Mission>…</Mission> becomes section 01 "Mission" of a flight report.
+import ReportSection from './ReportSection.astro';
+---
+
+<ReportSection no="01" title="Mission">
+  <slot />
+</ReportSection>

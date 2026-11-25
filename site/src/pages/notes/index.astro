@@ -1,0 +1,60 @@
+---
+import { getCollection } from 'astro:content';
+import NotebookLayout from '../../layouts/NotebookLayout.astro';
+import SectionTitle from '../../components/notebook/SectionTitle.astro';
+
+const notes = (await getCollection('notes', ({ data }) => import.meta.env.DEV || !data.draft)).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+---
+
+<NotebookLayout
+  title="Field notes"
+  description="Short field notes from Vipul Kumar on drones, software and building things."
+  paper="ruled"
+  current="notes"
+>
+  <SectionTitle level="h1" title="Field notes" sub="short entries, written between flights" />
+  {notes.length === 0 ? (
+    <p class="hand empty">No entries yet. The first one is on its way.</p>
+  ) : (
+    <ol class="list">
+      {notes.map((n) => (
+        <li>
+          <span class="label">
+            {fmt(n.data.date)}
+            {n.data.draft && ' · draft'}
+          </span>
+          <a class="hand t" href={`/notes/${n.id}/`}>
+            {n.data.title}
+          </a>
+          <p>{n.data.summary}</p>
+        </li>
+      ))}
+    </ol>
+  )}
+</NotebookLayout>
+
+<style>
+  .empty {
+    font-size: 1.5rem;
+    color: var(--ink-blue);
+  }
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 32px;
+  }
+  .t {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.15;
+    margin: 4px 0 6px;
+  }
+</style>

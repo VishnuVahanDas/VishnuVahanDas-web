@@ -1,0 +1,19 @@
+# dependencies
+node_modules/
+
+# build output
+site/dist/
+site/.astro/
+
+# python (api, later)
+__pycache__/
+*.pyc
+.venv/
+api/.env
+
+# os / editors
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+*.log
+.env

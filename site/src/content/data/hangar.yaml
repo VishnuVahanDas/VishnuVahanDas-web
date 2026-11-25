@@ -1,0 +1,10 @@
+# GitHub repos shown as luggage tags. Set `show: false` to hide one.
+# TODO(vipul): confirm each repo is public and fine to show before going live.
+- { id: nitya-dasa, order: 1, repo: nitya-dasa }
+- { id: sadhana-app, order: 2, repo: Sadhana_App }
+- { id: holytrail, order: 3, repo: holytrail }
+- { id: hrishikesh, order: 4, repo: hrishikesh }
+- { id: vyom-erp, order: 5, repo: vyom-erp }
+- { id: ai-drone, order: 6, repo: Ai_Drone }
+- { id: iskcongkp, order: 7, repo: iskcongkp }
+- { id: generateqr, order: 8, repo: generateQR }

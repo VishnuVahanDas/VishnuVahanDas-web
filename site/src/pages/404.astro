@@ -1,0 +1,33 @@
+---
+import NotebookLayout from '../layouts/NotebookLayout.astro';
+---
+
+<NotebookLayout title="Link lost" description="This page could not be found." noindex>
+  <section class="lost">
+    <p class="label">Failsafe · code 404</p>
+    <h1 class="hand">Link lost.</h1>
+    <p class="type">Failsafe triggered. Returning to launch…</p>
+    <a class="rtl hand" href="/">
+      RTL → home
+    </a>
+  </section>
+</NotebookLayout>
+
+<style>
+  .lost {
+    text-align: center;
+    padding: 80px 0 100px;
+  }
+  h1 {
+    font-size: var(--fs-hero);
+    color: var(--ink-red);
+    margin: 10px 0 16px;
+  }
+  .rtl {
+    display: inline-block;
+    margin-top: 32px;
+    font-size: 2rem;
+    border-bottom: 3px solid var(--ink-blue);
+    text-decoration: none;
+  }
+</style>

@@ -1,0 +1,52 @@
+---
+// The résumé link, styled as a ticket stub.
+interface Props {
+  href: string;
+  download?: boolean;
+}
+const { href, download = false } = Astro.props;
+---
+
+<a class="pass paper-card" href={href} download={download ? '' : undefined}>
+  <span class="stub">
+    Boarding
+    <br />
+    pass
+  </span>
+  <span class="main">
+    Résumé {download ? '· PDF ↓' : '→'}
+    <br />
+    <span class="route">GWL → ANYWHERE</span>
+  </span>
+</a>
+
+<style>
+  .pass {
+    display: inline-flex;
+    align-items: stretch;
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius);
+    font-family: var(--font-type);
+    font-size: 0.8125rem;
+    color: var(--ink);
+    text-decoration: none;
+    box-shadow: 2px 3px 0 rgba(46, 42, 36, 0.25);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: transform 0.2s ease;
+  }
+  .pass:hover {
+    transform: translateY(-2px) rotate(-1deg);
+    color: var(--ink);
+  }
+  .stub {
+    padding: 12px 14px;
+    border-right: 2px dashed var(--ink);
+  }
+  .main {
+    padding: 12px 16px;
+  }
+  .route {
+    color: var(--ink-muted);
+  }
+</style>

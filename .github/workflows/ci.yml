@@ -1,0 +1,28 @@
+# CI: check and build every push and pull request, so a broken commit shows a red ✗
+# on GitHub. Deploying is NOT done here: the VPS pulls `main` by itself every
+# 5 minutes (deploy/server/vv-deploy), so no server secrets live in GitHub.
+#
+# GitHub only runs workflows from .github/workflows/. Move this file there once:
+#   mkdir -p .github/workflows && git mv deploy/github-actions/ci.yml .github/workflows/ci.yml
+name: Check & build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: site
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build

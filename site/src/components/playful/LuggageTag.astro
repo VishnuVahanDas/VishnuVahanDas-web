@@ -1,0 +1,44 @@
+---
+// A GitHub repository as a paper luggage tag.
+interface Props {
+  repo: string;
+  rotate?: number;
+}
+const { repo, rotate = 0 } = Astro.props;
+---
+
+<a class="tag" href={`https://github.com/VishnuVahanDas/${repo}`} style={`--r:${rotate}deg`}>
+  <span class="hole" aria-hidden="true"></span>
+  <span class="visually-hidden">GitHub repository: </span>
+  {repo}
+</a>
+
+<style>
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    background: var(--tag);
+    border: 1.5px solid var(--manila-edge);
+    padding: 8px 18px 8px 24px;
+    font-family: var(--font-type);
+    font-size: 0.875rem;
+    color: var(--ink);
+    text-decoration: none;
+    clip-path: polygon(14px 0, 100% 0, 100% 100%, 14px 100%, 0 50%);
+    transform: rotate(calc(var(--r) * var(--rot-scale)));
+    transition: transform 0.2s ease;
+  }
+  .tag:hover {
+    transform: rotate(0deg) translateY(-2px);
+    color: var(--ink-blue);
+  }
+  .hole {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid var(--manila-edge);
+    flex: none;
+  }
+</style>

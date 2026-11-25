@@ -1,0 +1,223 @@
+---
+// A system sketch in pencil. Rough.js runs at BUILD time (no browser JS needed
+// to see it); scripts/sketch-diagram.ts only adds pan, zoom and the draw-in.
+// The spec comes from a report's front-matter `diagram:` block.
+import rough from 'roughjs';
+
+interface Node {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  shape: 'box' | 'circle' | 'dots';
+  count?: number;
+}
+interface Edge {
+  from: string;
+  to: string;
+  label?: string;
+}
+interface Props {
+  diagram: { width: number; height: number; label: string; nodes: Node[]; edges: Edge[] };
+}
+
+const { diagram } = Astro.props;
+const gen = rough.generator();
+const pencil = { stroke: '#3A3A3A', strokeWidth: 1.8, roughness: 1.3, bowing: 1.2 };
+let seed = 7;
+const opts = (extra: Record<string, unknown> = {}) => ({ ...pencil, seed: seed++, ...extra });
+
+type P = { d: string; stroke: string; strokeWidth: number; fill?: string };
+const paths: P[] = [];
+const add = (drawable: ReturnType<typeof gen.line>) =>
+  paths.push(...(gen.toPaths(drawable) as P[]));
+
+const byId = new Map(diagram.nodes.map((n) => [n.id, n]));
+
+// Nodes
+for (const n of diagram.nodes) {
+  if (n.shape === 'box') add(gen.rectangle(n.x, n.y, n.w, n.h, opts()));
+  if (n.shape === 'circle') add(gen.ellipse(n.x + n.w / 2, n.y + n.h / 2, n.w, n.h, opts()));
+  if (n.shape === 'dots') {
+    const count = n.count ?? 5;
+    const gap = n.w / count;
+    for (let i = 0; i < count; i++) {
+      add(
+        gen.circle(
+          n.x + gap * i + gap / 2,
+          n.y + n.h / 2,
+          18,
+          opts({ fill: '#5B5446', fillStyle: 'solid' }),
+        ),
+      );
+    }
+  }
+}
+
+// Edges: from the side of one node facing the other, with a hand-drawn arrowhead.
+const anchor = (a: Node, b: Node) => {
+  const ax = a.x + a.w / 2,
+    ay = a.y + a.h / 2,
+    bx = b.x + b.w / 2,
+    by = b.y + b.h / 2;
+  const horizontal = Math.abs(bx - ax) >= Math.abs(by - ay);
+  if (horizontal) {
+    const dir = Math.sign(bx - ax) || 1;
+    return { x1: ax + (dir * a.w) / 2, y1: ay, x2: bx - (dir * b.w) / 2, y2: by };
+  }
+  const dir = Math.sign(by - ay) || 1;
+  return { x1: ax, y1: ay + (dir * a.h) / 2, x2: bx, y2: by - (dir * b.h) / 2 };
+};
+
+const edgeLabels: { x: number; y: number; text: string; anchor: 'start' | 'middle' }[] = [];
+for (const e of diagram.edges) {
+  const a = byId.get(e.from),
+    b = byId.get(e.to);
+  if (!a || !b) throw new Error(`SketchDiagram: unknown node in edge ${e.from} → ${e.to}`);
+  const { x1, y1, x2, y2 } = anchor(a, b);
+  const mx = (x1 + x2) / 2,
+    my = (y1 + y2) / 2 - 8;
+  add(
+    gen.curve(
+      [
+        [x1, y1],
+        [mx, my],
+        [x2, y2],
+      ],
+      opts({ roughness: 0.9 }),
+    ),
+  );
+  const ang = Math.atan2(y2 - my, x2 - mx);
+  const head = 12;
+  for (const s of [-1, 1]) {
+    add(
+      gen.line(
+        x2,
+        y2,
+        x2 - head * Math.cos(ang + s * 0.45),
+        y2 - head * Math.sin(ang + s * 0.45),
+        opts({ roughness: 0.6 }),
+      ),
+    );
+  }
+  if (e.label) {
+    // Vertical arrows get their label beside the line, horizontal ones above it.
+    const vertical = Math.abs(x2 - x1) < Math.abs(y2 - y1);
+    edgeLabels.push(
+      vertical
+        ? { x: mx + 14, y: my + 6, text: e.label, anchor: 'start' }
+        : { x: mx, y: my - 10, text: e.label, anchor: 'middle' },
+    );
+  }
+}
+
+const pad = 20;
+const viewBox = `${-pad} ${-pad} ${diagram.width + pad * 2} ${diagram.height + pad * 2}`;
+const connections = diagram.edges.map(
+  (e) => `${byId.get(e.from)?.label} → ${byId.get(e.to)?.label}`,
+);
+---
+
+<figure class="sketch paper-card" data-sketch>
+  <div class="tools">
+    <span class="label hint">drag to pan · buttons to zoom</span>
+    <button type="button" data-zoom="in" aria-label="Zoom in">
+      +
+    </button>
+    <button type="button" data-zoom="out" aria-label="Zoom out">
+      −
+    </button>
+    <button type="button" data-zoom="reset" aria-label="Reset view">
+      reset
+    </button>
+  </div>
+  <svg viewBox={viewBox} data-home={viewBox} role="img" aria-label={diagram.label}>
+    <g class="strokes">
+      {paths.map((p) => (
+        <path d={p.d} stroke={p.stroke} stroke-width={p.strokeWidth} fill={p.fill ?? 'none'} />
+      ))}
+    </g>
+    <g class="labels">
+      {diagram.nodes.map((n) =>
+        n.shape === 'dots' ? (
+          <text x={n.x + n.w + 18} y={n.y + n.h / 2 + 7} class="blue">
+            {n.label}
+          </text>
+        ) : (
+          <text x={n.x + n.w / 2} y={n.y + n.h / 2 + 7} text-anchor="middle">
+            {n.label}
+          </text>
+        ),
+      )}
+      {edgeLabels.map((l) => (
+        <text x={l.x} y={l.y} text-anchor={l.anchor} class="small">
+          {l.text}
+        </text>
+      ))}
+    </g>
+  </svg>
+  <figcaption class="visually-hidden">Connections: {connections.join('; ')}.</figcaption>
+</figure>
+
+<script>
+  import '../../scripts/sketch-diagram';
+</script>
+
+<style>
+  .sketch {
+    margin: 16px 0 0;
+    border: 1.5px solid var(--ink);
+    padding: 12px 16px 16px;
+  }
+  .tools {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  .hint {
+    margin-right: auto;
+    text-transform: none;
+    letter-spacing: 0.04em;
+  }
+  .tools button {
+    min-width: 44px;
+    min-height: 36px;
+    font-family: var(--font-type);
+    font-size: 0.9375rem;
+    background: var(--card);
+    border: 1.5px solid var(--ink);
+    border-radius: 4px;
+    cursor: pointer;
+    color: var(--ink);
+  }
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    min-height: 220px;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+  svg:active {
+    cursor: grabbing;
+  }
+  text {
+    font-family: var(--font-hand);
+    font-size: 20px;
+    fill: var(--pencil);
+  }
+  text.blue {
+    fill: var(--ink-blue);
+  }
+  text.small {
+    font-size: 16px;
+    fill: var(--ink-muted);
+  }
+  :global(.js) .strokes path {
+    transition: stroke-dashoffset 1.6s ease;
+  }
+</style>

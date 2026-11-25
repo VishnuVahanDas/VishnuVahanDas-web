@@ -1,0 +1,38 @@
+---
+interface Props {
+  name?: string;
+}
+const { name = 'Vipul' } = Astro.props;
+---
+
+<div class="sig">
+  <span class="ink">{name}</span>
+  <span class="line">Pilot in command</span>
+</div>
+
+<style>
+  .sig {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 56px 0 0 auto;
+    width: 220px;
+  }
+  .ink {
+    font-family: var(--font-hand);
+    font-size: 2.5rem;
+    color: var(--ink-blue);
+    transform: rotate(-4deg);
+  }
+  .line {
+    width: 100%;
+    border-top: 1.5px solid var(--ink);
+    padding-top: 6px;
+    text-align: center;
+    font-family: var(--font-type);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+</style>

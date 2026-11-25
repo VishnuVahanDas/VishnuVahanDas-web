@@ -1,0 +1,206 @@
+---
+// The résumé as a full boarding pass, with a PDF download when one exists.
+import { getCollection, getEntry } from 'astro:content';
+import NotebookLayout from '../layouts/NotebookLayout.astro';
+
+const profile = (await getEntry('profile', 'vipul'))!.data;
+const log = (await getCollection('log')).sort((a, b) => b.data.order - a.data.order);
+const ventures = (await getCollection('ventures')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<NotebookLayout
+  title="Résumé"
+  description={`Résumé of ${profile.name}: UAV systems, software and ventures.`}
+>
+  <article class="pass paper-card">
+    <div class="main">
+      <div class="row top">
+        <span class="label">Boarding pass · Résumé</span>
+        <span class="label">Gate VV · Seat 1A</span>
+      </div>
+      <h1 class="hand">{profile.name}</h1>
+      <p class="route">
+        <span>GWL</span>
+        <span class="plane" aria-hidden="true">
+          ✈
+        </span>
+        <span>ANYWHERE</span>
+      </p>
+      <p class="roles type">{profile.roles}</p>
+
+      <h2 class="label">Experience</h2>
+      <ul class="xp">
+        {log.map(({ data }) => (
+          <li>
+            <span class="type when">{data.date}</span>
+            <span>
+              <strong>{data.role}</strong>, {data.org}
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <h2 class="label">Ratings</h2>
+      <ul class="xp">
+        {profile.ratings.map((r) => (
+          <li>
+            <span>
+              <strong>{r.title}</strong> · {r.detail}
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <h2 class="label">Ventures</h2>
+      <ul class="xp">
+        {ventures.map(({ data }) => (
+          <li>
+            <span>
+              <strong>{data.name}</strong> · {data.role}
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <h2 class="label">Education</h2>
+      <p class="edu">{profile.education}</p>
+    </div>
+    <div class="stub">
+      <span class="label">Passenger</span>
+      <span class="hand sname">{profile.name}</span>
+      <span class="label">From</span>
+      <span class="type">GWL</span>
+      <span class="label">To</span>
+      <span class="type">ANYWHERE</span>
+      {profile.resumePdf ? (
+        <a class="dl type" href={profile.resumePdf} download>
+          Download PDF ↓
+        </a>
+      ) : (
+        <span class="dl type todo">PDF coming soon</span>
+      )}
+      <span class="barcode" aria-hidden="true"></span>
+    </div>
+  </article>
+</NotebookLayout>
+
+<style>
+  .pass {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 960px;
+    margin: 20px auto 0;
+    border: 1.5px solid var(--ink);
+    border-radius: 14px;
+    box-shadow: 4px 6px 0 rgba(46, 42, 36, 0.2);
+  }
+  .main {
+    flex: 1 1 520px;
+    padding: 28px 32px;
+    min-width: 0;
+  }
+  .stub {
+    flex: 0 1 240px;
+    padding: 28px 24px;
+    border-left: 3px dashed var(--ink);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  h1 {
+    font-size: var(--fs-report);
+    color: var(--ink-blue);
+    margin-top: 12px;
+  }
+  .route {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-family: var(--font-type);
+    font-size: 1.75rem;
+    margin: 10px 0 6px;
+  }
+  .plane {
+    color: var(--ink-red);
+  }
+  .roles {
+    letter-spacing: 0.1em;
+    font-size: 0.9375rem;
+  }
+  h2 {
+    margin: 24px 0 8px;
+    font-weight: 400;
+  }
+  .xp {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+    font-size: 1rem;
+  }
+  .xp li {
+    display: grid;
+    grid-template-columns: 170px minmax(0, 1fr);
+    gap: 4px 14px;
+  }
+  .xp li > span:only-child {
+    grid-column: 1 / -1;
+  }
+  .edu {
+    font-size: 1rem;
+  }
+  .when {
+    font-size: 0.875rem;
+    padding-top: 2px;
+    color: var(--ink-muted);
+  }
+  .sname {
+    font-size: 1.5rem;
+    color: var(--ink-blue);
+    margin-bottom: 8px;
+  }
+  .dl {
+    margin-top: 18px;
+    font-size: 0.875rem;
+    padding: 10px 12px;
+    border: 1.5px solid var(--ink);
+    text-align: center;
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .todo {
+    color: var(--ink-muted);
+    border-style: dashed;
+  }
+  .barcode {
+    margin-top: auto;
+    height: 54px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--ink) 0 2px,
+      transparent 2px 4px,
+      var(--ink) 4px 7px,
+      transparent 7px 9px
+    );
+    opacity: 0.85;
+  }
+  @media (max-width: 720px) {
+    .xp li {
+      grid-template-columns: 1fr;
+    }
+    .stub {
+      border-left: 0;
+      border-top: 3px dashed var(--ink);
+    }
+    .main {
+      padding: 22px 20px;
+    }
+  }
+</style>

@@ -1,0 +1,102 @@
+---
+// A photo taped into the notebook. With no image yet, it shows a labelled
+// placeholder so the layout is visible while content is being collected.
+import type { ImageMetadata } from 'astro';
+import { Image, getImage } from 'astro:assets';
+
+interface Props {
+  src?: ImageMetadata;
+  video?: string;
+  alt: string;
+  caption: string;
+  rotate?: number;
+  width?: number;
+  height?: number;
+  tapes?: 1 | 2;
+  class?: string;
+}
+
+const {
+  src,
+  video,
+  alt,
+  caption,
+  rotate = 0,
+  width = 260,
+  height = 190,
+  tapes = 1,
+  class: cls,
+} = Astro.props;
+const full = src ? await getImage({ src, width: 1600 }) : undefined;
+---
+
+<figure class:list={['photo', cls]} style={`--r:${rotate}deg;--w:${width}px;--h:${height}px`}>
+  <span class="tape t1" aria-hidden="true"></span>
+  {tapes === 2 && <span class="tape t2" aria-hidden="true"></span>}
+  {src && full ? (
+    <a href={full.src} data-lightbox data-caption={caption} aria-label={`Open photo: ${alt}`}>
+      <Image src={src} alt={alt} width={width * 2} class="img" />
+    </a>
+  ) : video ? (
+    <video class="img" src={video} controls preload="none" playsinline aria-label={alt} />
+  ) : (
+    <div class="empty" role="img" aria-label={`Photo to come: ${caption}`}>
+      [photo: {caption}]
+    </div>
+  )}
+  {(src || video) && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .photo {
+    position: relative;
+    margin: 0;
+    width: min(var(--w), 100%);
+    background: var(--card);
+    padding: 9px 9px 9px;
+    box-shadow: var(--shadow-paper);
+    transform: rotate(calc(var(--r) * var(--rot-scale)));
+    transition: transform 0.3s ease;
+  }
+  .photo:hover {
+    transform: rotate(0deg);
+  }
+  .img,
+  .empty {
+    display: block;
+    width: 100%;
+    height: var(--h);
+    object-fit: cover;
+  }
+  .empty {
+    background: var(--photo-empty);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 16px;
+    font-family: var(--font-hand);
+    font-size: 1.0625rem;
+    line-height: 1.3;
+    color: var(--ink-muted);
+    border: 1px dashed rgba(46, 42, 36, 0.3);
+  }
+  figcaption {
+    font-family: var(--font-hand);
+    font-size: 1rem;
+    color: var(--ink-muted);
+    padding-top: 6px;
+    text-align: center;
+  }
+  .t1 {
+    left: 50%;
+    top: -14px;
+    margin-left: -52px;
+    transform: rotate(-4deg);
+  }
+  .t2 {
+    right: -20px;
+    bottom: 14px;
+    transform: rotate(52deg);
+  }
+</style>

@@ -1,0 +1,54 @@
+---
+// One shared <dialog> that shows a full-size photo. Opened by scripts/lightbox.ts.
+---
+
+<dialog class="lb" aria-label="Photo">
+  <form method="dialog">
+    <button class="close" aria-label="Close photo">
+      ✕
+    </button>
+  </form>
+  <img alt="" />
+  <p class="cap"></p>
+</dialog>
+
+<script>
+  import '../../scripts/lightbox';
+</script>
+
+<style>
+  .lb {
+    border: 0;
+    padding: 14px;
+    background: var(--card);
+    max-width: min(92vw, 1100px);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  }
+  .lb::backdrop {
+    background: rgba(20, 17, 15, 0.8);
+  }
+  img {
+    display: block;
+    max-width: 100%;
+    max-height: 80vh;
+    margin: 0 auto;
+  }
+  .cap {
+    font-family: var(--font-hand);
+    text-align: center;
+    padding-top: 8px;
+    color: var(--ink-muted);
+  }
+  .close {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+    width: 44px;
+    height: 44px;
+    border: 0;
+    background: transparent;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: var(--ink);
+  }
+</style>

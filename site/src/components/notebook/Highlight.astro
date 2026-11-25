@@ -1,0 +1,15 @@
+---
+// Yellow highlighter behind a few words.
+---
+
+<mark class="hl">
+  <slot />
+</mark>
+
+<style>
+  .hl {
+    color: inherit;
+    background: linear-gradient(transparent 55%, var(--highlighter) 55%);
+    padding: 0 2px;
+  }
+</style>

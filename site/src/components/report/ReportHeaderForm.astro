@@ -1,0 +1,49 @@
+---
+// The boxed form at the top of a flight report, filled in blue handwriting.
+interface Props {
+  fields: { k: string; v: string }[];
+}
+const { fields } = Astro.props;
+---
+
+<dl class="form paper-card">
+  {fields.map((f) => (
+    <div class="f">
+      <dt>{f.k}</dt>
+      <dd>{f.v}</dd>
+    </div>
+  ))}
+</dl>
+
+<style>
+  .form {
+    margin: 18px 0 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border: 2px solid var(--ink);
+  }
+  .f {
+    padding: 10px 14px;
+    border-right: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+  dt {
+    font-family: var(--font-type);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+  }
+  dd {
+    margin: 2px 0 0;
+    font-family: var(--font-hand);
+    font-size: 1.25rem;
+    color: var(--ink-blue);
+    line-height: 1.25;
+  }
+  @media (max-width: 720px) {
+    .form {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,56 @@
+---
+code: FR-04
+title: Sadhana platform
+kind: Software
+summary: Daily sadhana entries, streaks and coordinator groups for a temple community.
+status: INCIDENT LOGGED
+pageStamp: RESOLVED
+order: 4
+aircraft: Sadhana report website
+stack: Django · Postgres · Nginx
+link: https://sr.iskcongorakhpur.com
+linkLabel: sr.iskcongorakhpur.com
+photos:
+  - { alt: The daily sadhana entry screen, caption: the daily entry screen, rotate: -2.5 }
+  - { alt: The analysis board, caption: the analysis board, rotate: 2 }
+diagram:
+  width: 900
+  height: 230
+  label: 'Pencil sketch: devotees and coordinators use the Django app behind Nginx, which stores entries in Postgres.'
+  nodes:
+    - { id: users, label: devotees, x: 0, y: 30, w: 170, h: 60 }
+    - { id: coords, label: coordinators, x: 0, y: 150, w: 170, h: 60 }
+    - { id: nginx, label: Nginx, x: 290, y: 90, w: 130, h: 60 }
+    - { id: django, label: Django app, x: 500, y: 90, w: 160, h: 60 }
+    - { id: db, label: Postgres, x: 740, y: 90, w: 140, h: 60, shape: circle }
+  edges:
+    - { from: users, to: nginx }
+    - { from: coords, to: nginx }
+    - { from: nginx, to: django }
+    - { from: django, to: db }
+numbers:
+  - { label: Daily users, value: '[ ]' }
+  - { label: Longest streak, value: '[ ] days' }
+---
+
+<Mission>
+Help a temple community record daily sadhana and keep each other going: daily entries, streaks, coordinator groups and an analysis board, with separate roles for users and superusers.
+
+<Prompt>who asked for it, and how sadhana was tracked before</Prompt>
+</Mission>
+
+<Preflight>
+<Prompt>how you designed it: the data model, roles, and the first version you shipped</Prompt>
+</Preflight>
+
+<Incident>
+<Prompt>what broke in production</Prompt>
+</Incident>
+
+<RootCause>
+<Prompt>why it happened</Prompt>
+</RootCause>
+
+<Fix>
+<Prompt>what you changed, and how you made sure it does not happen again</Prompt>
+</Fix>

@@ -1,0 +1,40 @@
+---
+// Handwritten section heading with a typewriter subtitle.
+interface Props {
+  title: string;
+  sub?: string;
+  id?: string;
+  level?: 'h1' | 'h2';
+}
+const { title, sub, id, level = 'h2' } = Astro.props;
+const Tag = level;
+---
+
+<div class="st">
+  <Tag id={id} class="t">
+    {title}
+  </Tag>
+  {sub && <span class="label sub">{sub}</span>}
+</div>
+
+<style>
+  .st {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 18px;
+    margin-bottom: 28px;
+  }
+  .t {
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: var(--fs-section);
+    color: var(--ink);
+    scroll-margin-top: 24px;
+  }
+  .sub {
+    text-transform: none;
+    letter-spacing: 0.04em;
+    font-size: 0.875rem;
+  }
+</style>

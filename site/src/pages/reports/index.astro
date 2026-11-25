@@ -1,0 +1,85 @@
+---
+// All flight reports, filterable by kind.
+import { getCollection } from 'astro:content';
+import NotebookLayout from '../../layouts/NotebookLayout.astro';
+import SectionTitle from '../../components/notebook/SectionTitle.astro';
+import ManilaFolder from '../../components/playful/ManilaFolder.astro';
+
+const reports = (
+  await getCollection('reports', ({ data }) => import.meta.env.DEV || !data.draft)
+).sort((a, b) => a.data.order - b.data.order);
+const kinds = [...new Set(reports.map((r) => r.data.kind))];
+const tilt = [-1.5, 1, -0.5, 1.5, -1, 0.8];
+---
+
+<NotebookLayout
+  title="Flight reports"
+  description="Honest flight reports: the mission, what went wrong, the root cause and the fix."
+  current="reports"
+>
+  <SectionTitle level="h1" title="Flight reports" sub="mission → incident → root cause → fix" />
+  <div class="filter" role="group" aria-label="Filter reports by kind" data-filter>
+    <button type="button" aria-pressed="true" data-kind="all">
+      All
+    </button>
+    {kinds.map((k) => (
+      <button type="button" aria-pressed="false" data-kind={k}>
+        {k}
+      </button>
+    ))}
+  </div>
+  <div class="folders">
+    {reports.map((r, i) => (
+      <div class="slot" data-kind={r.data.kind}>
+        <ManilaFolder report={r} rotate={tilt[i % tilt.length]} />
+      </div>
+    ))}
+  </div>
+</NotebookLayout>
+
+<script>
+  const group = document.querySelector<HTMLElement>('[data-filter]');
+  const slots = document.querySelectorAll<HTMLElement>('.slot');
+  group?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>('button[data-kind]');
+    if (!btn) return;
+    const kind = btn.dataset.kind;
+    group
+      .querySelectorAll('button')
+      .forEach((b) => b.setAttribute('aria-pressed', String(b === btn)));
+    slots.forEach((s) => (s.hidden = kind !== 'all' && s.dataset.kind !== kind));
+  });
+</script>
+
+<style>
+  .filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: -8px 0 32px;
+  }
+  .filter button {
+    min-height: 40px;
+    padding: 6px 16px;
+    font-family: var(--font-hand);
+    font-size: 1.0625rem;
+    background: var(--card);
+    color: var(--ink);
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .filter button[aria-pressed='true'] {
+    background: var(--ink-blue);
+    border-color: var(--ink-blue);
+    color: var(--card);
+  }
+  .no-js .filter {
+    display: none;
+  }
+  .folders {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 40px 32px;
+  }
+</style>

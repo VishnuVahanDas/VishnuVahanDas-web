@@ -1,0 +1,31 @@
+# Flight log = career. `remark` is written in blue handwriting. Rewrite remarks in your own words.
+- id: aktu
+  order: 1
+  date: B.Tech
+  org: Dr. A.P.J. Abdul Kalam Technical University
+  role: B.Tech, Information Technology
+  remark: first Django sites & Flutter apps
+- id: vyom-dev
+  order: 2
+  date: Sep 2023 – Mar 2024
+  org: Vyom Drones Pvt Ltd
+  role: Software Developer
+  remark: where the drones began
+- id: vainateya
+  order: 3
+  date: 2024 →
+  org: Vainateya Skytech Private Limited
+  role: Founder & Director
+  remark: my own venture
+- id: vyom-partner
+  order: 4
+  date: Feb 2024 →
+  org: Vyom Drones Pvt Ltd
+  role: Shareholder · Board of Directors · Head of Department (Technical & Software Development)
+  remark: back as a partner
+- id: suas-2026
+  order: 5
+  date: '2026'
+  org: RoboNation SUAS · Tulsa, USA
+  role: Technical mentor, Team Trinetra
+  remark: flew the flag abroad

@@ -1,0 +1,188 @@
+---
+// One flight report. The MDX body supplies sections 01–05; the sketch (06) and
+// post-flight numbers (07) come from the report's front-matter.
+import { getCollection, render } from 'astro:content';
+import NotebookLayout from '../../layouts/NotebookLayout.astro';
+import Stamp from '../../components/notebook/Stamp.astro';
+import TapedPhoto from '../../components/notebook/TapedPhoto.astro';
+import ReportHeaderForm from '../../components/report/ReportHeaderForm.astro';
+import ReportSection from '../../components/report/ReportSection.astro';
+import SketchDiagram from '../../components/report/SketchDiagram.astro';
+import NumbersGrid from '../../components/report/NumbersGrid.astro';
+import Signature from '../../components/report/Signature.astro';
+import Mission from '../../components/report/Mission.astro';
+import Preflight from '../../components/report/Preflight.astro';
+import Incident from '../../components/report/Incident.astro';
+import RootCause from '../../components/report/RootCause.astro';
+import Fix from '../../components/report/Fix.astro';
+import Prompt from '../../components/report/Prompt.astro';
+
+export async function getStaticPaths() {
+  const reports = (
+    await getCollection('reports', ({ data }) => import.meta.env.DEV || !data.draft)
+  ).sort((a, b) => a.data.order - b.data.order);
+  return reports.map((report, i) => ({
+    params: { id: report.id },
+    props: {
+      report,
+      prev: reports[i - 1],
+      next: reports[i + 1],
+      index: i + 1,
+      total: reports.length,
+    },
+  }));
+}
+
+const { report, prev, next, index, total } = Astro.props;
+const d = report.data;
+const { Content } = await render(report);
+
+const fields = [
+  { k: 'Report no.', v: d.code },
+  { k: 'Aircraft', v: d.aircraft },
+  { k: 'Pilot in command', v: 'Vipul Kumar' },
+  { k: 'Flight stack', v: d.stack },
+  ...(d.fields ?? []),
+  { k: 'Date', v: d.date ?? '[date]' },
+];
+let n = 5;
+const pad = (x: number) => String(x).padStart(2, '0');
+---
+
+<NotebookLayout
+  title={`${d.code} ${d.title}`}
+  description={d.summary}
+  paper="ruled"
+  current="reports"
+>
+  <div class="topline">
+    <a class="back hand" href="/reports/">
+      ← all flight reports
+    </a>
+    <span class="label">
+      File {d.code} · {index} of {total}
+    </span>
+  </div>
+
+  <article class="report">
+    <div class="head">
+      <span class="label kicker">Flight report</span>
+      <Stamp text={d.pageStamp ?? d.status} size="lg" rotate={-5} />
+    </div>
+    <ReportHeaderForm fields={fields} />
+
+    <h1 class="title">{d.title}</h1>
+    <p class="summary">{d.summary}</p>
+    {d.link && (
+      <p class="link hand">
+        <a href={d.link}>{d.linkLabel ?? d.link} ↗</a>
+      </p>
+    )}
+
+    {d.photos.length > 0 && (
+      <div class="photos">
+        {d.photos.map((p) => (
+          <TapedPhoto
+            src={p.src}
+            video={p.video}
+            alt={p.alt}
+            caption={p.caption}
+            rotate={p.rotate}
+          />
+        ))}
+      </div>
+    )}
+
+    <Content components={{ Mission, Preflight, Incident, RootCause, Fix, Prompt }} />
+
+    {d.diagram && (
+      <ReportSection no={pad(++n)} title="System sketch">
+        <SketchDiagram diagram={d.diagram} />
+      </ReportSection>
+    )}
+    {d.numbers.length > 0 && (
+      <ReportSection no={pad(++n)} title="Post-flight numbers">
+        <NumbersGrid numbers={d.numbers} />
+      </ReportSection>
+    )}
+
+    <Signature />
+  </article>
+
+  <nav class="pn" aria-label="More flight reports">
+    {prev ? (
+      <a href={`/reports/${prev.id}/`}>
+        ← {prev.data.code} {prev.data.folderTitle ?? prev.data.title}
+      </a>
+    ) : (
+      <span />
+    )}
+    {next ? (
+      <a href={`/reports/${next.id}/`}>
+        {next.data.code} {next.data.folderTitle ?? next.data.title} →
+      </a>
+    ) : (
+      <span />
+    )}
+  </nav>
+</NotebookLayout>
+
+<style>
+  .topline {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: baseline;
+  }
+  .back {
+    font-size: 1.25rem;
+  }
+  .report {
+    max-width: 920px;
+    margin: 28px auto 0;
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .kicker {
+    letter-spacing: 0.25em;
+    color: var(--ink);
+  }
+  .title {
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: var(--fs-report);
+    line-height: 1.05;
+    margin-top: 40px;
+  }
+  .summary {
+    font-size: clamp(1.125rem, 2vw, 1.25rem);
+    margin-top: 10px;
+    max-width: 40em;
+  }
+  .link {
+    margin-top: 8px;
+    font-size: 1.25rem;
+  }
+  .photos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 32px;
+    margin: 48px 0 8px;
+  }
+  .pn {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 56px;
+    font-family: var(--font-hand);
+    font-size: 1.25rem;
+  }
+</style>

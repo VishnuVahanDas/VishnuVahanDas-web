@@ -1,0 +1,66 @@
+#!/usr/bin/env bash
+# vv-deploy: build vishnuvahan.com from GitHub and switch the live site to it.
+#
+# Runs as the `vvdeploy` user, every 5 minutes, from vv-deploy.timer. It only builds
+# when `main` on GitHub has a commit that is not live yet, so most runs do nothing.
+#
+#   vv-deploy            deploy if there is a new commit (skipped while pinned)
+#   vv-deploy --force    build and deploy the latest commit now, and remove any pin
+#
+# Each build goes into a new folder in releases/, then the `current` symlink is swapped
+# in one step, so visitors never see a half-finished site. The last 5 releases are kept.
+set -euo pipefail
+
+BASE="${VV_BASE:-/var/www/vishnuvahan.com}"
+BRANCH="${VV_BRANCH:-main}"
+NODE_DIR="${VV_NODE_DIR:-/opt/node24}"
+KEEP="${VV_KEEP:-5}"
+FORCE=0
+[[ "${1:-}" == "--force" ]] && FORCE=1
+
+export PATH="$NODE_DIR/bin:$PATH"
+REPO="$BASE/repo"
+log() { echo "[vv-deploy] $*"; }
+
+# One deploy at a time.
+exec 9>"$BASE/.deploy.lock"
+flock -n 9 || { log "another deploy is running; skipping"; exit 0; }
+
+if [[ -f "$BASE/.pinned" && $FORCE -eq 0 ]]; then
+  log "pinned by rollback.sh ($(cat "$BASE/.pinned")); run 'vv-deploy --force' to resume"
+  exit 0
+fi
+
+cd "$REPO"
+git fetch --quiet origin "$BRANCH"
+NEW="$(git rev-parse "origin/$BRANCH")"
+LIVE=""
+if [[ -L "$BASE/current" ]]; then
+  LIVE="$(basename "$(readlink "$BASE/current")")"
+  LIVE="${LIVE#*-}"
+fi
+
+if [[ "$NEW" == "$LIVE" && $FORCE -eq 0 ]]; then
+  exit 0 # already live, nothing to do
+fi
+
+log "building ${NEW:0:7} (live: ${LIVE:-none})"
+git reset --quiet --hard "$NEW"
+git clean --quiet -fdx -e site/node_modules
+
+cd "$REPO/site"
+npm ci --no-audit --no-fund --loglevel=error
+npm run --silent build
+
+REL="$BASE/releases/$(date -u +%Y%m%d%H%M%S)-$NEW"
+cp -a dist "$REL"
+ln -sfn "$REL" "$BASE/current.tmp"
+mv -Tf "$BASE/current.tmp" "$BASE/current"
+rm -f "$BASE/.pinned"
+log "live: $(basename "$REL")"
+
+# Keep the newest $KEEP releases (the live one is always the newest after a deploy).
+cd "$BASE/releases"
+ls -1d -- */ 2>/dev/null | sort -r | tail -n +"$((KEEP + 1))" | while read -r old; do
+  rm -rf -- "${old%/}"
+done

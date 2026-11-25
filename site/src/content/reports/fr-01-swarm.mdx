@@ -1,0 +1,67 @@
+---
+code: FR-01
+title: Ten drones, one formation
+folderTitle: 10-drone swarm
+kind: Aerial
+summary: Ten aircraft in formation on ArduPilot Follow Mode, every link carried over RFD900x radios.
+status: INCIDENT LOGGED
+pageStamp: RESOLVED
+order: 1
+aircraft: 10-drone swarm
+stack: ArduPilot · Follow Mode
+fields:
+  - { k: Data link, v: RFD900x }
+# TODO(vipul): add the date, e.g.  date: Jul 2026
+photos:
+  - { alt: All ten drones lined up before the first flight, caption: all ten lined up before the first flight, rotate: -3 }
+  - { alt: The first formation pass, caption: first formation pass (video), rotate: 2 }
+  - { alt: The part that failed, caption: the part that failed, rotate: -1.5 }
+diagram:
+  width: 1000
+  height: 250
+  label: 'Pencil sketch: Mission Planner talks over the RFD900x link to the leader drone; the follower drones follow the leader in Follow Mode.'
+  nodes:
+    - { id: gcs, label: Mission Planner, x: 0, y: 92, w: 190, h: 64 }
+    - { id: radio, label: RFD900x link, x: 320, y: 92, w: 170, h: 64 }
+    - { id: leader, label: leader, x: 640, y: 10, w: 150, h: 60 }
+    - { id: followers, label: followers, x: 600, y: 180, w: 230, h: 40, shape: dots, count: 5 }
+  edges:
+    - { from: gcs, to: radio }
+    - { from: radio, to: leader }
+    - { from: leader, to: followers, label: Follow Mode }
+numbers:
+  - { label: Aircraft in formation, value: '10' }
+  - { label: Formation spacing, value: '[ ] m' }
+  - { label: Link range, value: '[ ] m' }
+  - { label: Flight time, value: '[ ] min' }
+---
+
+<Mission>
+Get ten aircraft to fly as one: a single command from the ground, and the whole formation moves together, with the followers holding position off a leader using ArduPilot’s Follow Mode.
+
+<Prompt>why this swarm? who was it for, and what did it have to prove?</Prompt>
+</Mission>
+
+<Preflight>
+Formation configuration, radio setup and parameter tuning on each airframe before the first lift-off.
+
+<Prompt>what you set up: offsets, system IDs, radio channels, the checklist you used</Prompt>
+</Preflight>
+
+<Incident>
+What went wrong, written down exactly as it happened.
+
+<Prompt>the moment it broke: which drone, what you saw on the ground station, what you did next</Prompt>
+</Incident>
+
+<RootCause>
+Why it really happened, once the logs were read.
+
+<Prompt>the real cause: from the dataflash logs, the telemetry, or the hardware itself</Prompt>
+</RootCause>
+
+<Fix>
+What changed in parameters, wiring or software, and how it was proven.
+
+<Prompt>the change, and the flight that showed it worked</Prompt>
+</Fix>

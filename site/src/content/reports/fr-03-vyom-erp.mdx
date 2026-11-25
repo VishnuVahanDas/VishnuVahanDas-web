@@ -1,0 +1,35 @@
+---
+code: FR-03
+title: Vyom ERP
+kind: Software
+summary: The internal system that runs the company’s day-to-day work.
+status: IN SERVICE
+order: 3
+aircraft: Internal ERP
+stack: '[stack]'
+# Keep this report general: no confidential company details.
+photos:
+  - { alt: A screen from the ERP with sensitive data blurred, caption: a screen (blur anything sensitive), rotate: -2 }
+---
+
+<Mission>
+Give the company one internal system for its day-to-day work.
+
+<Prompt>what problem the ERP solves, in general terms (no confidential details)</Prompt>
+</Mission>
+
+<Preflight>
+<Prompt>how you planned it: modules, users, and what you built first</Prompt>
+</Preflight>
+
+<Incident>
+<Prompt>something that went wrong while building or running it</Prompt>
+</Incident>
+
+<RootCause>
+<Prompt>why it happened</Prompt>
+</RootCause>
+
+<Fix>
+<Prompt>what you changed</Prompt>
+</Fix>

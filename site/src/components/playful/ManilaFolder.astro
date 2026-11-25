@@ -1,0 +1,86 @@
+---
+// One flight report as a manila file folder. The whole folder is the link.
+import Stamp from '../notebook/Stamp.astro';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  report: CollectionEntry<'reports'>;
+  rotate?: number;
+}
+const { report, rotate = 0 } = Astro.props;
+const d = report.data;
+---
+
+<a class="folder" href={`/reports/${report.id}/`} style={`--r:${rotate}deg`}>
+  <span class="tab">{d.code}</span>
+  <span class="sheet" aria-hidden="true"></span>
+  <span class="kind">{d.kind}</span>
+  <span class="title">{d.folderTitle ?? d.title}</span>
+  <span class="sum">{d.summary}</span>
+  <Stamp text={d.status} />
+</a>
+
+<style>
+  .folder {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+    background: var(--manila);
+    border: 1.5px solid var(--manila-edge);
+    border-radius: 0 10px 10px 10px;
+    padding: 4px 22px 24px;
+    margin-top: 26px;
+    color: var(--ink);
+    text-decoration: none;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.18);
+    transform: rotate(calc(var(--r) * var(--rot-scale)));
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease;
+  }
+  .folder:hover,
+  .folder:focus-visible {
+    transform: translateY(-4px) rotate(0deg);
+    box-shadow: 0 14px 24px rgba(0, 0, 0, 0.22);
+    color: var(--ink);
+  }
+  .tab {
+    position: absolute;
+    left: -1.5px;
+    top: -27px;
+    background: var(--manila);
+    border: 1.5px solid var(--manila-edge);
+    border-bottom: 0;
+    border-radius: 8px 8px 0 0;
+    padding: 3px 16px;
+    font-family: var(--font-type);
+    font-size: 0.8125rem;
+  }
+  .sheet {
+    align-self: stretch;
+    height: 12px;
+    margin: -16px 10px 10px 16px;
+    background: var(--card);
+    border: 1px solid rgba(46, 42, 36, 0.3);
+  }
+  .kind {
+    font-family: var(--font-type);
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--manila-ink);
+  }
+  .title {
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: 1.875rem;
+    line-height: 1.1;
+  }
+  .sum {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    margin-bottom: 10px;
+  }
+</style>

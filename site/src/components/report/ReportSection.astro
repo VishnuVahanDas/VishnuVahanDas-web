@@ -1,0 +1,53 @@
+---
+// A numbered section of a flight report. The incident variant is written in red.
+interface Props {
+  no: string;
+  title: string;
+  incident?: boolean;
+}
+const { no, title, incident = false } = Astro.props;
+---
+
+<section class:list={['rs', { incident }]}>
+  <h2>
+    <span class="no">{no}</span> {title}
+  </h2>
+  <div class="body">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .rs {
+    margin-top: 44px;
+  }
+  h2 {
+    font-family: var(--font-type);
+    font-weight: 400;
+    font-size: 1.25rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .no {
+    font-size: 0.875rem;
+    margin-right: 10px;
+  }
+  .body {
+    margin-top: 12px;
+    font-size: 1.125rem;
+    line-height: 1.75;
+  }
+  .body :global(p + p) {
+    margin-top: 12px;
+  }
+  .incident {
+    border: 2px solid var(--ink-red);
+    background: rgba(180, 35, 24, 0.05);
+    padding: 22px 24px;
+    transform: rotate(calc(-0.4deg * var(--rot-scale)));
+  }
+  .incident h2 {
+    color: var(--ink-red);
+  }
+</style>

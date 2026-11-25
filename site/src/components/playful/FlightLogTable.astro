@@ -1,0 +1,109 @@
+---
+// Career laid out as a pilot's logbook. On phones each row becomes a stacked entry.
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entries: CollectionEntry<'log'>[];
+}
+const { entries } = Astro.props;
+---
+
+<div class="logwrap">
+  <table class="log">
+    <thead>
+      <tr>
+        <th scope="col">Date</th>
+        <th scope="col">Aircraft / organisation</th>
+        <th scope="col">Role</th>
+        <th scope="col">Remarks</th>
+      </tr>
+    </thead>
+    <tbody>
+      {entries.map(({ data }) => (
+        <tr>
+          <td class="date" data-k="Date">
+            {data.date}
+          </td>
+          <td class="org" data-k="Organisation">
+            {data.org}
+          </td>
+          <td data-k="Role">{data.role}</td>
+          <td class="remark" data-k="Remarks">
+            {data.remark}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .log {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 1rem;
+  }
+  th {
+    font-family: var(--font-type);
+    font-weight: 400;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    text-align: left;
+    padding: 10px 12px;
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+  }
+  th + th,
+  td + td {
+    border-left: 1px solid rgba(46, 42, 36, 0.35);
+  }
+  td {
+    padding: 14px 12px;
+    vertical-align: top;
+    border-bottom: 1px solid rgba(46, 42, 36, 0.35);
+  }
+  .date {
+    font-family: var(--font-type);
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+  .org {
+    font-weight: 500;
+  }
+  .remark {
+    font-family: var(--font-hand);
+    font-size: 1.125rem;
+    color: var(--ink-blue);
+    width: 24%;
+  }
+  @media (max-width: 720px) {
+    thead {
+      position: absolute;
+      left: -9999px;
+    }
+    .log,
+    tbody,
+    tr,
+    td {
+      display: block;
+      width: 100%;
+    }
+    tr {
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(46, 42, 36, 0.45);
+    }
+    td {
+      border: 0 !important;
+      padding: 2px 0;
+    }
+    .date {
+      white-space: normal;
+      color: var(--ink-muted);
+    }
+    .remark {
+      width: auto;
+    }
+  }
+</style>

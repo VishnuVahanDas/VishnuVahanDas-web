@@ -1,0 +1,60 @@
+---
+// Visitor counter shown as beads on a 108-bead mala: "round 12, bead 46 of 108".
+// It stays hidden until the Phase 6 API exists. Set PUBLIC_API_BASE (e.g. "/api")
+// in site/.env to switch it on.
+const api = import.meta.env.PUBLIC_API_BASE as string | undefined;
+---
+
+{api && (
+  <span class="mala" data-mala data-api={api} hidden>
+    <span class="beads" aria-hidden="true">
+      {Array.from({ length: 12 }, (_, i) => (
+        <span class:list={['bead', { meru: i === 11 }]} />
+      ))}
+    </span>
+    <span data-mala-text />
+  </span>
+)}
+
+<script>
+  const el = document.querySelector<HTMLElement>('[data-mala]');
+  if (el) {
+    const base = el.dataset.api;
+    const text = el.querySelector<HTMLElement>('[data-mala-text]')!;
+    const key = 'vv-visit-counted';
+    const counted = sessionStorage.getItem(key);
+    fetch(`${base}/visit${counted ? 's' : ''}/`, { method: counted ? 'GET' : 'POST' })
+      .then((r) => (r.ok ? r.json() : Promise.reject()))
+      .then(({ count }: { count: number }) => {
+        sessionStorage.setItem(key, '1');
+        const round = Math.floor((count - 1) / 108) + 1;
+        const bead = ((count - 1) % 108) + 1;
+        text.textContent = `visitor no. ${count.toLocaleString('en-IN')} · round ${round}, bead ${bead} of 108`;
+        el.hidden = false;
+      })
+      .catch(() => {
+        /* API not available: keep the counter hidden. */
+      });
+  }
+</script>
+
+<style>
+  .mala {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .beads {
+    display: flex;
+    gap: 3px;
+  }
+  .bead {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--manila-edge);
+  }
+  .meru {
+    background: var(--ink-red);
+  }
+</style>

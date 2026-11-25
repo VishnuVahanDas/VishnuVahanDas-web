@@ -1,0 +1,373 @@
+---
+// Home: the first pages of the logbook.
+import { getCollection, getEntry } from 'astro:content';
+import NotebookLayout from '../layouts/NotebookLayout.astro';
+import ShriHeader from '../components/notebook/ShriHeader.astro';
+import SectionTitle from '../components/notebook/SectionTitle.astro';
+import MarginNote from '../components/notebook/MarginNote.astro';
+import HandUnderline from '../components/notebook/HandUnderline.astro';
+import Highlight from '../components/notebook/Highlight.astro';
+import TapedPhoto from '../components/notebook/TapedPhoto.astro';
+import PilotCard from '../components/playful/PilotCard.astro';
+import BoardingPass from '../components/playful/BoardingPass.astro';
+import FlightLogTable from '../components/playful/FlightLogTable.astro';
+import ManilaFolder from '../components/playful/ManilaFolder.astro';
+import LuggageTag from '../components/playful/LuggageTag.astro';
+import KalavaThread from '../components/playful/KalavaThread.astro';
+import VentureCard from '../components/playful/VentureCard.astro';
+import ArmSwitch from '../components/playful/ArmSwitch.astro';
+
+const profileEntry = await getEntry('profile', 'vipul');
+if (!profileEntry) throw new Error('src/content/data/profile.yaml needs a `vipul` entry');
+const profile = profileEntry.data;
+
+const byOrder = <T extends { data: { order: number } }>(a: T, b: T) => a.data.order - b.data.order;
+const log = (await getCollection('log')).sort(byOrder);
+const ventures = (await getCollection('ventures')).sort(byOrder);
+const seva = (await getCollection('seva')).sort(byOrder);
+const hangar = (await getCollection('hangar', ({ data }) => data.show)).sort(byOrder);
+const reports = (
+  await getCollection('reports', ({ data }) => import.meta.env.DEV || !data.draft)
+).sort(byOrder);
+
+// The tagline is stored as one string; highlight the words "what crashed".
+const [before, after] = profile.tagline.split('what crashed');
+
+const folderTilt = [-1.5, 1, -0.5, 1.5, -1, 0.8];
+const tagTilt = [-2, 2, -1, 1.5, -2.5, 1, -1.5, 2];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  url: 'https://vishnuvahan.com',
+  jobTitle: 'Head of Department (Technical & Software Development)',
+  worksFor: { '@type': 'Organization', name: 'Vyom Drones Pvt Ltd' },
+  founder: ventures.map((v) => ({ '@type': 'Organization', name: v.data.name })),
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Dr. A.P.J. Abdul Kalam Technical University' },
+  hasCredential: profile.ratings.map((r) => ({
+    '@type': 'EducationalOccupationalCredential',
+    name: `${r.title}: ${r.detail}`,
+    recognizedBy: {
+      '@type': 'Organization',
+      name: 'Directorate General of Civil Aviation (DGCA), India',
+    },
+  })),
+  sameAs: [profile.github, profile.linkedin].filter(Boolean),
+};
+---
+
+<NotebookLayout
+  title="Home"
+  description="Vipul Kumar: UAV systems engineer, software developer and founder. A field logbook of drones, software and the honest stories of what broke."
+  jsonLd={jsonLd}
+>
+  <ShriHeader />
+
+  <!-- ENTRY 001: hero -->
+  <section class="hero" aria-labelledby="who">
+    <div class="intro">
+      <p class="label">Entry 001 · Who is flying</p>
+      <h1 id="who" class="name">
+        {profile.name}
+      </h1>
+      <HandUnderline />
+      <p class="roles">{profile.roles}</p>
+      <p class="tagline">
+        {before}
+        <Highlight>what crashed</Highlight>
+        {after}
+      </p>
+      <MarginNote class="crash-note" arrow="up">
+        honest entries only. crashes included.
+      </MarginNote>
+      <div class="cta">
+        <a class="read" href="#reports">
+          read the flight reports →
+        </a>
+        <BoardingPass
+          href={profile.resumePdf ?? '/resume/'}
+          download={Boolean(profile.resumePdf)}
+        />
+      </div>
+    </div>
+
+    <div class="cardstack">
+      <TapedPhoto
+        class="field"
+        src={profile.fieldPhoto}
+        alt={profile.fieldPhotoAlt ?? 'Vipul in the field with a drone'}
+        caption="you with a drone in the field"
+        rotate={5}
+        width={250}
+        height={290}
+      />
+      <div class="pc">
+        <PilotCard profile={profile} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Flight log -->
+  <section class="block" aria-labelledby="log">
+    <SectionTitle id="log" title="Flight log" sub="my career, logged like flight hours" />
+    <FlightLogTable entries={log} />
+  </section>
+
+  <!-- Flight reports -->
+  <section class="block" aria-labelledby="reports">
+    <SectionTitle id="reports" title="Flight reports" sub="mission → incident → root cause → fix" />
+    <div class="folders">
+      {reports.map((r, i) => (
+        <ManilaFolder report={r} rotate={folderTilt[i % folderTilt.length]} />
+      ))}
+    </div>
+    <p class="more">
+      <a class="hand" href="/reports/">
+        all flight reports →
+      </a>
+    </p>
+  </section>
+
+  <!-- Hangar -->
+  <section class="block" aria-labelledby="hangar">
+    <SectionTitle id="hangar" title="Hangar" sub="tagged and shelved on GitHub" />
+    <div class="tags">
+      {hangar.map((h, i) => (
+        <LuggageTag repo={h.data.repo} rotate={tagTilt[i % tagTilt.length]} />
+      ))}
+    </div>
+    <p class="more hand">
+      the rest of the hangar → <a href={profile.github}>github.com/{profile.callsign}</a>
+    </p>
+  </section>
+
+  <!-- Ventures -->
+  <section class="block" aria-labelledby="ventures">
+    <SectionTitle id="ventures" title="Ventures" sub="companies I run" />
+    <div class="ventures">
+      {ventures.map((v, i) => (
+        <VentureCard {...v.data} rotate={i % 2 ? 1.2 : -1} />
+      ))}
+    </div>
+  </section>
+
+  <!-- Seva -->
+  <section class="block seva" aria-labelledby="seva">
+    <KalavaThread />
+    <div class="seva-in">
+      <div>
+        <p class="hand seva-dev" lang="hi">
+          सेवा
+        </p>
+        <h2 id="seva" class="hand seva-t">
+          Seva
+        </h2>
+        <p>Websites and apps built for temples, devotees and yatris.</p>
+      </div>
+      <ul class="seva-list">
+        {seva.map((s) => (
+          <li class="paper-card">
+            {s.data.url ? (
+              <a class="hand sname" href={s.data.url}>
+                {s.data.name}
+              </a>
+            ) : (
+              <span class="hand sname">{s.data.name}</span>
+            )}
+            <span class="label">{s.data.what}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="block contact" aria-labelledby="contact">
+    <div>
+      <SectionTitle id="contact" title="Contact" />
+      <p>Flip the switch to arm the comms link.</p>
+    </div>
+    <ArmSwitch profile={profile} />
+  </section>
+</NotebookLayout>
+
+<style>
+  .hero {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 56px;
+    margin-top: 36px;
+    align-items: flex-start;
+  }
+  .intro {
+    flex: 1 1 520px;
+    min-width: 0;
+  }
+  .name {
+    font-family: var(--font-hand);
+    font-weight: 700;
+    font-size: clamp(3.5rem, 7.4vw, 5.75rem);
+    white-space: nowrap;
+    line-height: 1;
+    color: var(--ink-blue);
+    margin-top: 14px;
+  }
+  .roles {
+    font-family: var(--font-type);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 0.9375rem;
+    margin: 18px 0 22px;
+  }
+  .tagline {
+    font-size: clamp(1.125rem, 2vw, 1.3125rem);
+    max-width: 34em;
+  }
+  .intro :global(.crash-note) {
+    margin: 12px 0 0 clamp(0px, 30vw, 330px);
+  }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    margin-top: 26px;
+  }
+  .read {
+    font-family: var(--font-hand);
+    font-size: 1.5rem;
+    color: var(--ink-blue);
+    text-decoration: none;
+    border-bottom: 3px solid var(--ink-blue);
+  }
+  .cardstack {
+    flex: 0 1 400px;
+    position: relative;
+    min-height: 530px;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 400px;
+  }
+  .cardstack :global(.field) {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .pc {
+    position: absolute;
+    left: 0;
+    top: 215px;
+  }
+  .block {
+    margin-top: 96px;
+  }
+  .folders {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 40px 32px;
+  }
+  .more {
+    margin-top: 22px;
+    font-size: 1.25rem;
+    color: var(--ink-blue);
+  }
+  .more a {
+    color: var(--ink-blue);
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+  }
+  .ventures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 28px;
+  }
+  .seva-in {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    padding-top: 36px;
+  }
+  .seva-in > div {
+    flex: 1 1 320px;
+  }
+  .seva-dev {
+    color: var(--ink-red);
+    font-size: 1.5rem;
+  }
+  .seva-t {
+    font-weight: 700;
+    font-size: var(--fs-section);
+    margin: 2px 0 12px;
+  }
+  .seva-list {
+    flex: 1 1 420px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .seva-list li {
+    border: 1.5px solid var(--ink);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    box-shadow: 2px 3px 0 rgba(46, 42, 36, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .sname {
+    font-size: 1.375rem;
+    color: var(--ink-blue);
+    line-height: 1.2;
+  }
+  .seva-list .label {
+    text-transform: none;
+    letter-spacing: 0.04em;
+  }
+  .contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    align-items: center;
+  }
+  .contact > div:first-child {
+    flex: 1 1 340px;
+  }
+  .contact > :global(.tx) {
+    flex: 1 1 400px;
+  }
+  @media (max-width: 720px) {
+    .hero {
+      gap: 32px;
+    }
+    .cardstack {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 36px;
+    }
+    .cardstack :global(.field),
+    .pc {
+      position: relative;
+      left: auto;
+      right: auto;
+      top: auto;
+    }
+    .intro :global(.crash-note) {
+      margin-left: 40px;
+    }
+    .seva-list {
+      grid-template-columns: 1fr;
+    }
+    .block {
+      margin-top: 64px;
+    }
+  }
+</style>

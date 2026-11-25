@@ -1,0 +1,18 @@
+- id: iskcon-gorakhpur
+  order: 1
+  name: ISKCON Gorakhpur
+  what: temple website
+- id: sadhana
+  order: 2
+  name: Sadhana report
+  what: daily practice tracking
+  url: https://sr.iskcongorakhpur.com
+- id: nitya-dasa
+  order: 3
+  name: Nitya Dāsa
+  what: self-tracking app
+- id: holytrail
+  order: 4
+  name: HolyTrail
+  what: yatra & pilgrimage
+  url: https://holytrail.in

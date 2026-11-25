@@ -1,0 +1,8 @@
+---
+// MDX helper: <Incident>…</Incident> becomes section 03 "Incident report" of a flight report.
+import ReportSection from './ReportSection.astro';
+---
+
+<ReportSection no="03" title="Incident report" incident>
+  <slot />
+</ReportSection>

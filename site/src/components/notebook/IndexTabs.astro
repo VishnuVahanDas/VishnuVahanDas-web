@@ -1,0 +1,105 @@
+---
+// Coloured paper index tabs that stick out above the notebook: the main menu.
+import { getCollection } from 'astro:content';
+
+interface Props {
+  current?: 'log' | 'reports' | 'hangar' | 'seva' | 'contact' | 'notes';
+}
+const { current } = Astro.props;
+
+const notes = await getCollection('notes', ({ data }) => import.meta.env.DEV || !data.draft);
+
+const tabs = [
+  { key: 'log', label: 'Flight log', href: '/#log', color: 'var(--tab-1)' },
+  { key: 'reports', label: 'Flight reports', href: '/reports/', color: 'var(--tab-2)' },
+  { key: 'hangar', label: 'Hangar', href: '/#hangar', color: 'var(--tab-3)' },
+  { key: 'seva', label: 'Seva', href: '/#seva', color: 'var(--tab-4)' },
+  ...(notes.length
+    ? [{ key: 'notes', label: 'Notes', href: '/notes/', color: 'var(--tab-2)' }]
+    : []),
+  { key: 'contact', label: 'Contact', href: '/#contact', color: 'var(--tab-5)' },
+];
+---
+
+<nav class="tabs" aria-label="Logbook sections">
+  <a class="home" href="/" aria-label="Logbook home">
+    VV
+  </a>
+  <ul>
+    {tabs.map((t) => (
+      <li>
+        <a
+          href={t.href}
+          style={`--tab:${t.color}`}
+          aria-current={current === t.key ? 'page' : undefined}
+        >
+          {t.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>
+
+<style>
+  .tabs {
+    max-width: var(--page-max);
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    padding-left: calc(var(--page-pad-left) - 24px);
+  }
+  .home {
+    font-family: var(--font-type);
+    color: var(--tab-1);
+    text-decoration: none;
+    font-size: 0.875rem;
+    letter-spacing: 0.15em;
+    padding: 8px 6px;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  ul::-webkit-scrollbar {
+    display: none;
+  }
+  li a {
+    display: block;
+    white-space: nowrap;
+    background: var(--tab);
+    color: var(--ink);
+    text-decoration: none;
+    font-family: var(--font-hand);
+    font-size: 1.125rem;
+    line-height: 1;
+    padding: 10px 18px 8px;
+    border-radius: 7px 7px 0 0;
+    transform: translateY(4px);
+    transition: transform 0.2s ease;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+  li a:hover,
+  li a[aria-current='page'] {
+    transform: translateY(0);
+  }
+  li a[aria-current='page'] {
+    font-weight: 700;
+  }
+  @media (max-width: 720px) {
+    .tabs {
+      padding-left: 8px;
+    }
+    li a {
+      font-size: 1rem;
+      padding: 9px 12px 7px;
+    }
+  }
+</style>

@@ -1,0 +1,24 @@
+# Vipul's pilot card + hero. Edit freely; the site reads everything from here.
+vipul:
+  name: Vipul Kumar
+  callsign: VishnuVahanDas
+  base: Gwalior, India
+  roles: UAV Systems · Software · Founder
+  tagline: >-
+    I build drones that fly themselves, and software that keeps them (and people) on track.
+    This logbook is where I write down what I built, what crashed, and what fixing it taught me.
+  ratings:
+    - title: DGCA Remote Pilot
+      detail: Small & Medium Rotorcraft
+    - title: DGCA Remote Pilot Instructor
+      detail: Small Rotorcraft
+  education: B.Tech, Information Technology, Dr. A.P.J. Abdul Kalam Technical University
+  github: https://github.com/VishnuVahanDas
+  # TODO(vipul): add your email, e.g.  email: you@example.com
+  # TODO(vipul): add your LinkedIn URL, e.g.  linkedin: https://www.linkedin.com/in/...
+  # TODO(vipul): add photos into src/assets/photos/ and uncomment:
+  # photo: ../../assets/photos/vipul-portrait.jpg
+  # fieldPhoto: ../../assets/photos/vipul-field.jpg
+  # fieldPhotoAlt: Vipul holding a quadcopter at the test field
+  # TODO(vipul): put your résumé at public/resume.pdf and uncomment:
+  # resumePdf: /resume.pdf

@@ -1,0 +1,74 @@
+/* Design tokens: the single source of truth for colour, type and spacing.
+   Values come from the approved Field Logbook mockups (docs/mockups/). */
+:root {
+  /* surfaces */
+  --desk: #2b2622;
+  --paper: #f1ece0;
+  --paper-report: #f4f0e6;
+  --card: #fbf8f1;
+  --grid-line: rgba(70, 100, 140, 0.12);
+  --ruled-line: rgba(70, 100, 140, 0.16);
+  --margin-line: rgba(180, 35, 24, 0.35);
+
+  /* inks */
+  --ink: #2e2a24;
+  --ink-muted: #5b5446;
+  --ink-blue: #1e3a8a;
+  --ink-red: #b42318;
+  --highlighter: rgba(255, 221, 0, 0.55);
+  --pencil: #3a3a3a;
+
+  /* stationery */
+  --tape: rgba(222, 205, 150, 0.85);
+  --manila: #e3c98f;
+  --manila-edge: #8a6b2e;
+  --manila-ink: #4f3f1c;
+  --tag: #f7e7b9;
+  --photo-empty: #d8d2c4;
+  --tab-1: #f6e27a;
+  --tab-2: #bfe3c6;
+  --tab-3: #f5c2b8;
+  --tab-4: #f7c77c;
+  --tab-5: #bcd3f2;
+
+  /* hardware */
+  --lipo: #2f7d4f;
+  --tx-body: #3a3f45;
+  --tx-well: #24282d;
+  --tx-lever: #c9ced4;
+  --armed: #7be0a1;
+  --disarmed: #f5a3a3;
+  --link-on-dark: #f6e27a;
+  --kalava-red: #c62828;
+  --kalava-yellow: #f2b705;
+
+  /* type */
+  --font-hand: 'Kalam', 'Comic Sans MS', cursive;
+  --font-type: 'Special Elite', 'Courier New', monospace;
+  --font-body: 'Literata Variable', Georgia, serif;
+
+  --fs-hero: clamp(3.5rem, 9vw, 6.5rem);
+  --fs-section: clamp(2.25rem, 5vw, 3.25rem);
+  --fs-report: clamp(2.75rem, 7vw, 4.75rem);
+  --fs-body: clamp(1.0625rem, 1.6vw, 1.25rem);
+  --fs-label: 0.8125rem;
+
+  /* layout */
+  --page-max: 1160px;
+  --ring-strip: 44px;
+  --page-pad-left: 104px;
+  --page-pad: 56px;
+  --radius: 6px;
+  --shadow-page: 0 30px 60px rgba(0, 0, 0, 0.45);
+  --shadow-paper: 0 6px 14px rgba(0, 0, 0, 0.22);
+  --rot-scale: 1;
+}
+
+@media (max-width: 720px) {
+  :root {
+    --ring-strip: 18px;
+    --page-pad-left: 34px;
+    --page-pad: 20px;
+    --rot-scale: 0.5;
+  }
+}

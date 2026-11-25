@@ -1,0 +1,41 @@
+---
+interface Props {
+  numbers: { label: string; value: string }[];
+}
+const { numbers } = Astro.props;
+---
+
+<dl class="nums">
+  {numbers.map((n) => (
+    <div class="n paper-card">
+      <dt>{n.label}</dt>
+      <dd>{n.value}</dd>
+    </div>
+  ))}
+</dl>
+
+<style>
+  .nums {
+    margin: 16px 0 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+  }
+  .n {
+    border: 1.5px solid var(--ink);
+    padding: 14px;
+  }
+  dt {
+    font-family: var(--font-type);
+    font-size: 0.6875rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+  }
+  dd {
+    margin: 0;
+    font-family: var(--font-hand);
+    font-size: 1.75rem;
+    color: var(--ink-blue);
+  }
+</style>

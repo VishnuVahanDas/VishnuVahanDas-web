@@ -1,0 +1,98 @@
+---
+// A 3S LiPo pinned to the corner of the desk. It drains as you scroll:
+// 12.6 V at the top of the page, 10.5 V at the bottom (scripts/battery.ts).
+// Purely decorative, so it is hidden from screen readers.
+---
+
+<div class="lipo" data-battery aria-hidden="true">
+  <div class="pack">
+    <span class="cell"></span>
+    <span class="cell"></span>
+    <span class="cell"></span>
+    <span class="cell"></span>
+  </div>
+  <span class="nub"></span>
+  <span class="volts" data-volts>
+    3S · 12.6V
+  </span>
+  <span class="hint">drains as you scroll ↓</span>
+</div>
+
+<script>
+  import '../../scripts/battery';
+</script>
+
+<style>
+  .lipo {
+    position: fixed;
+    top: 14px;
+    right: 18px;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: auto auto;
+    align-items: center;
+    column-gap: 2px;
+    row-gap: 4px;
+    padding: 8px 10px;
+    background: var(--card);
+    border-radius: 6px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+    transform: rotate(2deg);
+  }
+  .pack {
+    display: flex;
+    gap: 3px;
+    border: 2px solid var(--ink);
+    border-radius: 4px;
+    padding: 3px;
+  }
+  .cell {
+    width: 14px;
+    height: 12px;
+    background: var(--lipo);
+    transition: background 0.3s;
+  }
+  .cell.off {
+    background: transparent;
+    outline: 1px dashed var(--ink-muted);
+    outline-offset: -1px;
+  }
+  .nub {
+    width: 4px;
+    height: 9px;
+    background: var(--ink);
+    border-radius: 0 2px 2px 0;
+  }
+  .volts {
+    grid-column: 1 / -1;
+    font-family: var(--font-type);
+    font-size: 0.75rem;
+    color: var(--ink);
+  }
+  .volts.low {
+    color: var(--ink-red);
+  }
+  .hint {
+    grid-column: 1 / -1;
+    font-family: var(--font-hand);
+    font-size: 0.8125rem;
+    color: var(--ink-blue);
+    transition: opacity 0.6s;
+  }
+  .lipo.scrolled .hint {
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+  }
+  @media (max-width: 720px) {
+    .lipo {
+      top: auto;
+      bottom: 12px;
+      right: 12px;
+      padding: 6px 8px;
+    }
+    .hint {
+      display: none;
+    }
+  }
+</style>

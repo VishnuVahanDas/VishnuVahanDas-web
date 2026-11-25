@@ -1,0 +1,151 @@
+---
+// An ID-style card clipped into the logbook. It is a personal card that names
+// Vipul's DGCA ratings; it does not imitate any official DGCA document.
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  profile: CollectionEntry<'profile'>['data'];
+  rotate?: number;
+}
+const { profile, rotate = -2.5 } = Astro.props;
+---
+
+<div class="card paper-card" style={`--r:${rotate}deg`}>
+  <svg class="clip" viewBox="0 0 40 90" aria-hidden="true">
+    <path d="M12 80 V18 a10 10 0 0 1 20 0 V70 a6 6 0 0 1 -12 0 V24"></path>
+  </svg>
+  <div class="band">Pilot card · VV-001</div>
+  <div class="top">
+    {profile.photo ? (
+      <Image src={profile.photo} alt={`Portrait of ${profile.name}`} width={168} class="face" />
+    ) : (
+      <div class="face empty" role="img" aria-label="Portrait to come">
+        [your photo]
+      </div>
+    )}
+    <dl class="ids">
+      <dt>Name</dt>
+      <dd class="hand name">{profile.name}</dd>
+      <dt>Callsign</dt>
+      <dd>{profile.callsign}</dd>
+      <dt>Base</dt>
+      <dd>{profile.base}</dd>
+    </dl>
+  </div>
+  <div class="ratings">
+    <div class="label">Ratings</div>
+    <ul>
+      {profile.ratings.map((r) => (
+        <li>
+          <span class="rt">{r.title}</span> · {r.detail}
+        </li>
+      ))}
+    </ul>
+    <div class="label edu-l">Education</div>
+    <p class="edu">{profile.education}</p>
+  </div>
+</div>
+
+<style>
+  .card {
+    position: relative;
+    width: min(340px, 100%);
+    border: 1.5px solid var(--ink);
+    border-radius: 12px;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+    transform: rotate(calc(var(--r) * var(--rot-scale)));
+  }
+  .clip {
+    position: absolute;
+    left: 34px;
+    top: -30px;
+    width: 26px;
+    height: 64px;
+    z-index: 2;
+  }
+  .clip path {
+    stroke: #7a7a7a;
+    stroke-width: 3;
+    fill: none;
+    stroke-linecap: round;
+  }
+  .band {
+    background: var(--ink-blue);
+    color: var(--card);
+    font-family: var(--font-type);
+    font-size: 0.8125rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 10px 16px;
+    border-radius: 10px 10px 0 0;
+  }
+  .top {
+    display: flex;
+    gap: 14px;
+    padding: 16px 16px 10px;
+  }
+  .face {
+    width: 84px;
+    height: 104px;
+    flex: none;
+    object-fit: cover;
+  }
+  .face.empty {
+    background: var(--photo-empty);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-family: var(--font-hand);
+    font-size: 0.8125rem;
+    color: var(--ink-muted);
+  }
+  .ids {
+    margin: 0;
+    font-family: var(--font-type);
+    font-size: 0.8125rem;
+    line-height: 1.35;
+  }
+  dt {
+    font-size: 0.6875rem;
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  dd {
+    margin: 0 0 4px;
+  }
+  .name {
+    font-family: var(--font-hand);
+    font-size: 1.3rem;
+    color: var(--ink-blue);
+    line-height: 1.1;
+  }
+  .ratings {
+    margin: 0 16px 16px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--ink-muted);
+    font-family: var(--font-type);
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+  .ratings .label {
+    font-size: 0.6875rem;
+  }
+  ul {
+    list-style: none;
+    margin: 2px 0 8px;
+    padding: 0;
+  }
+  li::before {
+    content: '✓ ';
+    color: var(--ink-blue);
+  }
+  .rt {
+    color: var(--ink-blue);
+  }
+  .edu-l {
+    margin-top: 4px;
+  }
+</style>

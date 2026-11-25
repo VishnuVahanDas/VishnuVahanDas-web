@@ -1,0 +1,19 @@
+[Unit]
+Description=Deploy vishnuvahan.com when GitHub main has a new commit
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=vvdeploy
+Group=vvdeploy
+Environment=HOME=/home/vvdeploy
+ExecStart=/usr/local/bin/vv-deploy
+Nice=10
+TimeoutStartSec=900
+# Hardening: the deploy can only write to the site folder and its own home.
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/var/www/vishnuvahan.com /home/vvdeploy

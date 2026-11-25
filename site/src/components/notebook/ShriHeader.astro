@@ -1,0 +1,39 @@
+---
+// The first line of the logbook, as on the first page of a traditional bahi-khata.
+---
+
+<div class="shri">
+  <span class="label vol">Pilot’s field logbook · Vol. 01 · vishnuvahan.com</span>
+  <span class="mark" lang="hi">
+    ॥ श्री ॥
+  </span>
+  <span class="spacer" aria-hidden="true"></span>
+</div>
+
+<style>
+  .shri {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+  }
+  .mark {
+    font-family: var(--font-hand);
+    color: var(--ink-red);
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+  @media (max-width: 720px) {
+    .shri {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      text-align: center;
+    }
+    .mark {
+      order: -1;
+    }
+    .spacer {
+      display: none;
+    }
+  }
+</style>
