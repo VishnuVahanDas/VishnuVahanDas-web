@@ -5,8 +5,14 @@
   # TODO(vipul): one line about what Vainateya Skytech does
   line: '[one line about Vainateya Skytech]'
   # TODO(vipul): add the company website URL
-- id: holytrail
+- id: vyom-drones
   order: 2
+  name: Vyom Drones Pvt Ltd
+  role: Partner · Board of Directors
+  line: Drone company in Gwalior, where I head Technical & Software Development.
+  # TODO(vipul): add the company website URL, e.g.  url: https://…
+- id: holytrail
+  order: 3
   name: HolyTrail
   role: Founder
   line: Yatra & pilgrimage journeys to the holy dhams.

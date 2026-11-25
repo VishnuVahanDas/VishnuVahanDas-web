@@ -43,7 +43,10 @@ const jsonLd = {
   url: 'https://vishnuvahan.com',
   jobTitle: 'Head of Department (Technical & Software Development)',
   worksFor: { '@type': 'Organization', name: 'Vyom Drones Pvt Ltd' },
-  founder: ventures.map((v) => ({ '@type': 'Organization', name: v.data.name })),
+  // Only companies Vipul founded; Vyom Drones is a partnership (see worksFor).
+  founder: ventures
+    .filter((v) => v.data.role.includes('Founder'))
+    .map((v) => ({ '@type': 'Organization', name: v.data.name })),
   alumniOf: { '@type': 'CollegeOrUniversity', name: 'Dr. A.P.J. Abdul Kalam Technical University' },
   hasCredential: profile.ratings.map((r) => ({
     '@type': 'EducationalOccupationalCredential',
@@ -144,10 +147,10 @@ const jsonLd = {
 
   <!-- Ventures -->
   <section class="block" aria-labelledby="ventures">
-    <SectionTitle id="ventures" title="Ventures" sub="companies I run" />
+    <SectionTitle id="ventures" title="Ventures" sub="companies I run and partner in" />
     <div class="ventures">
       {ventures.map((v, i) => (
-        <VentureCard {...v.data} rotate={i % 2 ? 1.2 : -1} />
+        <VentureCard {...v.data} rotate={[-1, 1.2, -0.6][i % 3]} />
       ))}
     </div>
   </section>
