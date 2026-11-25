@@ -30,6 +30,10 @@ const year = new Date().getFullYear();
       </main>
       <footer class="foot">
         <span>© {year} Vipul Kumar · logbook closed for today</span>
+        <span class="lic">
+          <a href="https://github.com/VishnuVahanDas/VishnuVahanDas-web/blob/main/LICENSE">code MIT</a> ·
+          content all rights reserved
+        </span>
         <MalaCounter />
       </footer>
     </div>
@@ -89,6 +93,12 @@ const year = new Date().getFullYear();
     font-family: var(--font-type);
     font-size: 0.8125rem;
     color: var(--ink-muted);
+  }
+  .lic a {
+    color: inherit;
+  }
+  .lic a:hover {
+    color: var(--ink-blue);
   }
   @media (max-width: 720px) {
     .desk {

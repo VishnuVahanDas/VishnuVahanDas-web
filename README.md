@@ -43,3 +43,9 @@ api/                        reserved for the small Django API (later)
 - Adding content: **`docs/CONTENT-GUIDE.md`**
 - Going live: **`deploy/README.md`** (push to `main`; the VPS deploys itself within about 5 minutes)
 - Project rules for Claude Code: **`CLAUDE.md`**
+
+## Licence
+
+- **Code:** MIT. See [`LICENSE`](LICENSE).
+- **Content** (text, photos, résumé, project details): © Vipul Kumar, all rights reserved.
+  See [`LICENSE-CONTENT.md`](LICENSE-CONTENT.md).
