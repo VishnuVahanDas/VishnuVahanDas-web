@@ -17,14 +17,26 @@
   org: Vainateya Skytech Private Limited
   role: Founder & Director
   remark: my own venture
-- id: vyom-partner
+- id: dgca-pilot
   order: 4
-  date: Feb 2024 →
+  date: Aug 2024
+  org: DGCA (Directorate General of Civil Aviation)
+  role: Remote Pilot Licence · Small & Medium Rotorcraft (2–150 kg)
+  remark: licensed to fly
+- id: dgca-instructor
+  order: 5
+  date: Mar 2025
+  org: DGCA (Directorate General of Civil Aviation)
+  role: Remote Pilot Instructor · Small Rotorcraft
+  remark: now I teach it too
+- id: vyom-partner
+  order: 6
+  date: Feb 2026 →
   org: Vyom Drones Pvt Ltd
   role: Shareholder · Board of Directors · Head of Department (Technical & Software Development)
   remark: back as a partner
 - id: suas-2026
-  order: 5
+  order: 7
   date: '2026'
   org: RoboNation SUAS · Tulsa, USA
   role: Technical mentor, Team Trinetra

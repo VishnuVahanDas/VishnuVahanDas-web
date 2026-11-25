@@ -214,7 +214,7 @@ Sections in order (match the mockup):
 | FR-03 | Vyom ERP | Software | Internal company ERP. **Keep it general; confidential details are not allowed.** | IN SERVICE |
 | FR-04 | Sadhana platform | Software | Daily sadhana entries, streaks, coordinator groups, analysis board, user/superuser roles; Django + Postgres + Nginx; live at sr.iskcongorakhpur.com. | INCIDENT LOGGED |
 | FR-05 | HolyTrail | Venture | Yatra & pilgrimage brand, holytrail.in. | IN SERVICE |
-| FR-06 | Nitya Dāsa | App | Flutter app for spiritual self-tracking. | IN BUILD |
+| FR-06 | ISKCON Gorakhpur | Software | Temple website with EaseBuzz online donations (Django). | IN SERVICE |
 
 ### 6.3 Other pages
 
@@ -242,7 +242,7 @@ Sections in order (match the mockup):
 | B.Tech | Dr. A.P.J. Abdul Kalam Technical University | B.Tech, Information Technology | first Django sites & Flutter apps |
 | Sep 2023 – Mar 2024 | Vyom Drones Pvt Ltd | Software Developer | where the drones began |
 | 2024 → | Vainateya Skytech Private Limited | Founder & Director | my own venture |
-| Feb 2024 → | Vyom Drones Pvt Ltd | Shareholder · Board of Directors · Head of Department (Technical & Software Development) | back as a partner |
+| Feb 2026 → | Vyom Drones Pvt Ltd | Shareholder · Board of Directors · Head of Department (Technical & Software Development) | back as a partner |
 | 2026 | RoboNation SUAS · Tulsa, USA | Technical mentor, Team Trinetra | flew the flag abroad |
 
 **ventures.yaml**

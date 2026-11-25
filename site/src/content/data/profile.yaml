@@ -9,13 +9,13 @@ vipul:
     This logbook is where I write down what I built, what crashed, and what fixing it taught me.
   ratings:
     - title: DGCA Remote Pilot
-      detail: Small & Medium Rotorcraft
+      detail: Small & Medium Rotorcraft (2–150 kg), since Aug 2024
     - title: DGCA Remote Pilot Instructor
-      detail: Small Rotorcraft
+      detail: Small Rotorcraft, since Mar 2025
   education: B.Tech, Information Technology, Dr. A.P.J. Abdul Kalam Technical University
   github: https://github.com/VishnuVahanDas
-  # TODO(vipul): add your email, e.g.  email: you@example.com
-  # TODO(vipul): add your LinkedIn URL, e.g.  linkedin: https://www.linkedin.com/in/...
+  email: vipul57612@gmail.com
+  linkedin: https://in.linkedin.com/in/vishnuvahandas
   # TODO(vipul): add photos into src/assets/photos/ and uncomment:
   # photo: ../../assets/photos/vipul-portrait.jpg
   # fieldPhoto: ../../assets/photos/vipul-field.jpg

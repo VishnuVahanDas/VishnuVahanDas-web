@@ -1,0 +1,51 @@
+---
+code: FR-06
+title: ISKCON Gorakhpur
+kind: Software
+summary: The temple’s website, with online donations through the EaseBuzz payment gateway.
+status: IN SERVICE
+order: 6
+aircraft: ISKCON Gorakhpur website
+stack: Django · EaseBuzz · Nginx
+# TODO(vipul): add the website address, e.g.  link: https://…  and  linkLabel: …
+photos:
+  - { alt: The ISKCON Gorakhpur home page, caption: the temple’s home page, rotate: -2 }
+  - { alt: The online donation page, caption: the donation page, rotate: 2 }
+diagram:
+  width: 900
+  height: 230
+  label: 'Pencil sketch: devotees use the Django website behind Nginx; donations go through the EaseBuzz payment gateway.'
+  nodes:
+    - { id: devotees, label: devotees, x: 0, y: 90, w: 160, h: 60 }
+    - { id: nginx, label: Nginx, x: 250, y: 90, w: 130, h: 60 }
+    - { id: django, label: Django site, x: 470, y: 90, w: 170, h: 60 }
+    - { id: pay, label: EaseBuzz, x: 730, y: 20, w: 150, h: 60 }
+    - { id: db, label: Postgres, x: 730, y: 160, w: 150, h: 60, shape: circle }
+  edges:
+    - { from: devotees, to: nginx }
+    - { from: nginx, to: django }
+    - { from: django, to: pay, label: donations }
+    - { from: django, to: db }
+---
+
+<Mission>
+Give the temple a website of its own, where devotees can find the temple and offer donations online.
+
+<Prompt>what the temple needed, and what was there before</Prompt>
+</Mission>
+
+<Preflight>
+<Prompt>how you built it: pages, the donation flow, the server setup</Prompt>
+</Preflight>
+
+<Incident>
+<Prompt>something that went wrong: a payment issue, a deploy, a security or SEO problem</Prompt>
+</Incident>
+
+<RootCause>
+<Prompt>why it happened</Prompt>
+</RootCause>
+
+<Fix>
+<Prompt>what you changed, and how you kept donations working while you did it</Prompt>
+</Fix>
