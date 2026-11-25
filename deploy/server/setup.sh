@@ -252,6 +252,7 @@ ok "vv-deploy.timer active: checks GitHub every 5 minutes"
 
 # ---------------------------------------------------------------------------
 bold "Done"
+if ((${#OLD_FILES[@]})); then OLD_SUMMARY="disabled ${OLD_FILES[*]} (backup: $BACKUP)"; else OLD_SUMMARY="none found"; fi
 SCHEME="http"; [[ -f "$CERT" ]] && SCHEME="https"
 CODE="$(curl -s -o /dev/null -w '%{http_code}' --resolve "$DOMAIN:443:127.0.0.1" --resolve "$DOMAIN:80:127.0.0.1" "$SCHEME://$DOMAIN/" || true)"
 ok "$SCHEME://$DOMAIN/ answers $CODE from this server"
@@ -262,6 +263,6 @@ cat <<EOF
    Deploy now     sudo -u $DEPLOY_USER vv-deploy --force
    Deploy log     journalctl -u vv-deploy -n 50
    Roll back      vv-rollback          (list: vv-rollback --list)
-   Old config     ${OLD_FILES[*]:+backed up in $BACKUP}${OLD_FILES[*]:-none was found}
+   Old config     $OLD_SUMMARY
 
 EOF
